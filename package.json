@@ -1,0 +1,14 @@
+{
+  "name": "seqappend",
+  "version": "1.0.0",
+  "description": "Helper to make subsequent calls to fs.appendFile sequential",
+  "main": "SeqAppend.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "respository": {
+    "type": "git",
+    "url": "https://github.com/gebbber/seqappend.git"},
+  "author": "Gregory Everett Brandon <greg.brandon@gmail.com>",
+  "license": "ISC"
+}
