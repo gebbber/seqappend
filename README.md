@@ -1,6 +1,26 @@
 # seqappend
 
-Forces consecutive/repeated calls to fs.appendFile to be added to the file sequentially
+Forces repeated calls to `fs.appendFile` to be added to the file in the correct order.  Writes to the file are still made asynchronously.
+
+## Life without `seqappend`:
+
+```
+89
+90
+78
+73
+92
+94
+91
+95
+96
+93
+99
+97
+100
+98
+```
+(This is from the end of `badFile.txt` after running `npm run test`.)
 
 ## General use, with no callbacks:
 
@@ -47,10 +67,7 @@ const writeLog = SeqAppend('log.txt');
 
 writeLog1('data', (err)=>console.log(err));
 ```
-
-### ...with the data being written.
-
 If you specify a callback in both places, then the one specified with the 'write' operation will override the one added to the constructor.
 
 ## Warning with respect to Constructors!
-__You cannot rely on the callback being run every time__, because subsequent write oeprations result in data being concatenated and then appended to the file in a single call to `fs.appendFile`.  __The callback is only run when this call is made to `fs.appendFile`.__
+__You cannot rely on the callback being run for every write operation in your code__, because subsequent write operations result in data being concatenated and then appended to the file in a single call to `fs.appendFile`.  __The callback is only run when `seqappend` makes an actual call to `fs.appendFile`.__
