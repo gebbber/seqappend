@@ -1,20 +1,8 @@
 # seqappend
 
-Make consecutive/repeated calls to fs.appendFile sequential!
+Forces consecutive/repeated calls to fs.appendFile to be added to the file sequentially
 
-##
-
-```javascript
-const writeFile = require('seqappend')(targetfilename, (err)=>{
-    console.log(err);
-}));
-
-fileAppenderFunction(data, (err)=>{
-    console.log(err);
-}));
-```
-The callbacks are optional.  If one is provided
-## General Use:
+## General use, with no callbacks:
 
 ```javascript
 const writeLog = require('seqappend')('logfile.txt');
@@ -38,7 +26,9 @@ writeLog2('In...');
 writeLog2('...multiple...');
 writeLog2('............files');
 ```
-## You can specify a callback in two places:
+## Using Callbacks
+
+### In the constructor:
 
 ```javascript
 const SeqAppend = require('seqappend');
@@ -48,7 +38,7 @@ const writeLog = SeqAppend('log.txt', (err)=>console.log(err));
 writeLog1('data');
 ```
 
-### ...in the constructor, or...
+### Or with the 'write' operations:
 
 ```javascript
 const SeqAppend = require('seqappend');
@@ -60,6 +50,7 @@ writeLog1('data', (err)=>console.log(err));
 
 ### ...with the data being written.
 
-If you specify a callback in both places, then the one added to the 'writer' function will override the one added to the constructor.
+If you specify a callback in both places, then the one specified with the 'write' operation will override the one added to the constructor.
 
-__You cannot rely on the callback being run every time__, because subsequent calls to the 'writer' function result in data being concatenated and then appended to the file in a single call to `fs.appendFile`.  The callback is only run when this call is made to `fs.appendFile`.
+## Warning with respect to Constructors!
+__You cannot rely on the callback being run every time__, because subsequent write oeprations result in data being concatenated and then appended to the file in a single call to `fs.appendFile`.  __The callback is only run when this call is made to `fs.appendFile`.__
