@@ -1,14 +1,22 @@
 const fs = require('fs');
 
-module.exports = SeqAppend = (filename, cb1) => {
+module.exports = SeqAppend = (filename, cb) => {
     const dataBuffer = [];
-    return (newData, cb2) => {
+    let waitingForWrite = false;
+    
+    return (newData) => {
         dataBuffer.push(newData);
+        if (!waitingForWrite) writeData();
+    }
+
+    function writeData() {
         setTimeout(()=>{
             if (dataBuffer.length) fs.appendFile(filename,dataBuffer.join(''),(err)=>{
-                if (cb2 && typeof cb2 === 'function') return cb2(err);
-                else if (cb1 && typeof cb1 === 'function') return cb1(err);
+                waitingForWrite = false;
+                if (dataBuffer.length) writeData();
+                if (cb && typeof cb === 'function') return cb(err);
             });
+            waitingForWrite = true;
             dataBuffer.length = 0;
         },0);
     }
